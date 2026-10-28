@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:login20263/screens/cheking.dart';
 import 'package:login20263/screens/login.dart';
 import 'package:login20263/screens/principal.dart';
+import 'package:login20263/screens/register.dart';
 import 'package:login20263/services/auth_service.dart';
+import 'package:login20263/services/notifications_service.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -19,10 +21,11 @@ class AppState extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<AuthService>(create: (context) => AuthService()),
       ],
-      child: const MyApp()
+      child: const MyApp(),
     );
   }
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -31,16 +34,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'login demo',
+      scaffoldMessengerKey: NotificationsService.messengerKey,
       theme: ThemeData(
-        colorScheme:ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 163, 39, 240)),
-        useMaterial3: true
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color.fromARGB(255, 163, 39, 240),
+        ),
+        useMaterial3: true,
       ),
       initialRoute: 'cheking',
-      routes:{
+      routes: {
         'login': (_) => LoginPage(),
+        'register': (_) => RegisterPage(),
         'home': (_) => PrincipalScr(),
         'cheking': (_) => CheckAuthScreen(),
-      }
+      },
     );
   }
 }
