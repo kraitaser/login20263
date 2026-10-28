@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:login20263/screens/cheking.dart';
+import 'package:login20263/screens/login.dart';
+import 'package:login20263/screens/principal.dart';
 import 'package:login20263/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +17,7 @@ class AppState extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<AuthService>(create: (context) => AuthService()),
+        ChangeNotifierProvider<AuthService>(create: (context) => AuthService()),
       ],
       child: const MyApp()
     );
@@ -31,7 +34,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme:ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 163, 39, 240)),
         useMaterial3: true
-      )
+      ),
+      initialRoute: 'cheking',
+      routes:{
+        'login': (_) => LoginPage(),
+        'home': (_) => PrincipalScr(),
+        'cheking': (_) => CheckAuthScreen(),
+      }
     );
   }
 }

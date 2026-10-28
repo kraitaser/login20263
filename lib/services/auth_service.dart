@@ -5,9 +5,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService extends ChangeNotifier {
-  final String _baseUrl = 'http://receta2eb20263.somee.com/api';
+  static const String _baseHost = 'receta2eb20263.somee.com';
 
   final FlutterSecureStorage storage = const FlutterSecureStorage();
+
+  Uri get registerUri => Uri.https(_baseHost, '/api/Accounts/register');
+  Uri get loginUri => Uri.https(_baseHost, '/api/Accounts/login');
   
   Future<String?> createdUser(String email, String password) async {
     final Map<String, dynamic> authData = {
@@ -15,17 +18,19 @@ class AuthService extends ChangeNotifier {
       'password': password
     };
     
-    final url = Uri.http(_baseUrl, 'Accounts/register');
-    final resp = await http.post(url,
+    
+    final resp = await http.post(
+      registerUri,
       headers: {'Content-Type': 'application/json'},
-      body: json.encode(authData));
+      body: json.encode(authData),
+    );
     final Map<String, dynamic> decodedResp = json.decode(resp.body);
     
     if(decodedResp.containsKey('token')) {
       await storage.write(key: 'token', value: decodedResp['token']);
       return null;
     } else {
-      return decodedResp['error'];
+      return decodedResp['error']?['message'] ?? decodedResp['message'] ?? 'error al registrar';
     }
   }
   Future<String?> login(String email, String password) async {
@@ -34,17 +39,18 @@ class AuthService extends ChangeNotifier {
       'password': password
     };
     
-    final url = Uri.http(_baseUrl, 'Accounts/login');
-    final resp = await http.post(url,
+    final resp = await http.post(
+      loginUri,
       headers: {'Content-Type': 'application/json'},
-      body: json.encode(authData));
+      body: json.encode(authData),
+    );
     final Map<String, dynamic> decodedResp = json.decode(resp.body);
     
     if(decodedResp.containsKey('token')) {
       await storage.write(key: 'token', value: decodedResp['token']);
       return null;
     } else {
-      return decodedResp['error'];
+      return decodedResp['error']?['message'] ?? decodedResp['message'] ?? 'error al logear';
     }
   }  
   Future logout() async{

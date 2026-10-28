@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login20263/providers/login_form_provider.dart';
+import 'package:login20263/services/auth_service.dart';
+import 'package:login20263/services/notifications_service.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
@@ -104,7 +106,7 @@ class _LoginForm extends StatelessWidget{
                     if(errorMessage == null){
                       Navigator.pushReplacementNamed(context, 'home');
                     } else {
-                      NotificationService.showSnackbar(errorMessage);
+                      NotificationsService.showSnackbar(errorMessage);
                       loginForm.isLoading = false;
                     }
                   },
