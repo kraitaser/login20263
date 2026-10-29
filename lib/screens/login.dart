@@ -5,10 +5,10 @@ import 'package:login20263/services/notifications_service.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
-  const new({super.key});
+  const LoginPage({super.key});
 
-  @override 
-  Widget build(BuildContext context){
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         child: ChangeNotifierProvider(
@@ -20,130 +20,152 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class _LoginForm extends StatelessWidget{
+class _LoginForm extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   _LoginForm({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final loginForm = Provider.of<LoginFormProvider>(context);
     return Center(
       child: Scaffold(
         body: DecoratedBox(
           decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 96, 108, 93)
+            color: Color.fromARGB(255, 96, 108, 93),
           ),
           child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height:16.0,),
-                Container(
-                  width: size.width * 0.80,
-                  height: size.height * 0.17,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage( 'assets/Casio-logo.jpg'), 
-                      fit: BoxFit.fill
-                    )
-                  )
-                ),
-                Container(
-                  width: size.width * 0.80,
-                  height : size.height *0.50,
-                  alignment: Alignment.center,
-                ),
-                TextFormField(
-                  autocorrect: false,
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    hintText: 'Ingrese su correo',
-                    labelText: 'Correo',
-                    labelStyle: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight:FontWeight.w500,
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: loginForm.formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 16.0),
+                  Container(
+                    width: size.width * 0.80,
+                    height: size.height * 0.17,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/Casio-logo.jpg'),
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
-                  validator: (value){
-                    String pattern =
-                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                    RegExp regExp = RegExp(pattern);
-                    return regExp.hasMatch(value ?? '') ? null : 'el valor ingresado no es un correo';
-                  }
-                ),
-                TextFormField(
-                  controller: _passwordController,
-                  autocorrect: false,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    hintText: '********',
-                    labelText: 'Contraseña',
-                    labelStyle: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight:FontWeight.w500,
-                    ),
+                  Container(
+                    width: size.width * 0.80,
+                    height: size.height * 0.5,
+                    alignment: Alignment.center,
                   ),
-                  validator: (value){
-                    return (value != null && value.length >=8) ? null : 'la contrase;a debe de ser de mass de 8 o mas caracteres';
-                  },
-                ),
-                ElevatedButton(
-                  onPressed: loginForm.isLoading ? null : ()async {
-                    FocusScope.of(context).unfocus();
-                    final authService = Provider.of<AuthService>(context, listen: false);
-                    if(!loginForm.isValidForm()) return;
-                    loginForm.isLoading = true;
+                  TextFormField(
+                    autocorrect: false,
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _emailController,
+                    onChanged: (value) => loginForm.email = value,
+                    decoration: const InputDecoration(
+                      hintText: 'ejemplo@test.com',
+                      labelText: 'Email',
+                      labelStyle: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Color.fromARGB(255, 255, 244, 244),
+                      ),
+                    ),
+                    validator: (value) {
+                      String pattern =
+                          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                      RegExp regExp = RegExp(pattern);
+                      return regExp.hasMatch(value ?? '')
+                          ? null
+                          : 'El valor ingresado no es un correo electronico';
+                    },
+                  ),
+                  TextFormField(
+                    controller: _passwordController,
+                    autocorrect: false,
+                    obscureText: true,
+                    onChanged: (value) => loginForm.password = value,
+                    decoration: const InputDecoration(
+                      hintText: '***********',
+                      labelText: 'Contraseña',
+                      labelStyle: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Color.fromARGB(255, 255, 244, 244),
+                      ),
+                    ),
+                    validator: (value) {
+                      return (value != null && value.length >= 8)
+                          ? null
+                          : 'La contraseña debe de ser de mas de 7 caraceres';
+                    },
+                  ),
+                  ElevatedButton(
+                    onPressed: loginForm.isLoading
+                        ? null
+                        : () async {
+                            FocusScope.of(context).unfocus();
+                            loginForm.email = _emailController.text.trim();
+                            loginForm.password = _passwordController.text;
 
-                    final String? errorMessage = await authService.login(loginForm.email, loginForm.password);
-                    if(errorMessage == null){
-                      Navigator.pushReplacementNamed(context, 'home');
-                    } else {
-                      NotificationsService.showSnackbar(errorMessage);
-                      loginForm.isLoading = false;
-                    }
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all<Color>(Color.fromARGB(255, 255, 244, 244),),   
-                  ),
-                  child: const Text(
-                    'iniciar sesion',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 96, 108, 93),
-                      fontSize: 25,
-                      fontWeight: FontWeight.w500
+                            final authService = Provider.of<AuthService>(context, listen: false);
+                            if (!loginForm.isValidForm()) return;
+
+                            loginForm.isLoading = true;
+                            final String? errorMessage = await authService.login(
+                              loginForm.email,
+                              loginForm.password,
+                            );
+
+                            if (errorMessage == null) {
+                              Navigator.pushReplacementNamed(context, 'home');
+                            } else {
+                              NotificationsService.showSnackbar(errorMessage);
+                              loginForm.isLoading = false;
+                            }
+                          },
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all<Color>(
+                        const Color.fromARGB(255, 255, 244, 244),
+                      ),
+                    ),
+                    child: const Text(
+                      'Iniciar sesion',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w500,
+                        color: Color.fromARGB(255, 96, 100, 93),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16.0,),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all<Color>(Color.fromARGB(255, 255, 244, 244),),
+                  const SizedBox(height: 16.0),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all<Color>(
+                        const Color.fromARGB(255, 255, 244, 244),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, 'register', arguments: '');
+                    },
+                    child: const Text(
+                      'Registrate',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w500,
+                        color: Color.fromARGB(255, 96, 100, 93),
+                      ),
+                    ),
                   ),
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, 'register', arguments: '');
-                  },
-                  child: const Text(
-                    'registrate',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 96, 100, 93),
-                      fontSize: 25,
-                      fontWeight: FontWeight.w500,
-                    )
-                  )
-                )
-              ]
-            ) 
-          ,)
-        )
-      )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
-  } 
+  }
 }
